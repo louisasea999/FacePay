@@ -1,0 +1,24 @@
+    <ion-content padding>
+      <div class="registerTab">
+          <ion-icon class="closeBack" name="close" on-tap="backToMine(e)"></ion-icon>   
+      </div>
+    <!-- <p>this is for register or login</p> -->
+    <div class="myVedio" on-tap="getH5Cameral()" >
+      <video id="video2" src="">Video sream is no available</video>
+      <canvas id="canvas2" width="300" height="300">canvas is support</canvas>
+      <img id="iimg" alt="">
+    </div>
+    <div class="alipayBtn">
+      <button ion-button on-tap="getSignInfo()">支付宝授权</button>
+      <button ion-button on-tap="getAuth()">支付宝授权</button>
+      <button ion-button on-tap="getTradeNumber()">获取订单</button>
+      <button ion-button on-tap="tradePay('jj')">支付</button>
+      <button ion-button on-tap="getH5Cameral()">摄像头</button>
+      <button ion-button on-tap="register()">注册</button>
+      <button ion-button on-tap="getUserId()">getUserId</button>
+      
+      
+    </div>
+    
+  </ion-content>
+  

@@ -1,0 +1,23 @@
+    <ion-content padding>
+    <div class="myDiv">
+      <div *ngIf="!isLogin" class="registerLogin left" on-tap="registerLoginTap()">
+        登陆/注册
+      </div>
+      <div *ngIf="isLogin" class="registerLogin left" on-tap="logout()">
+        退出
+      </div>
+    </div>
+    <div class="profilePhoto">
+      <img [src]="userservice.userInfo.imgBase" alt="">
+    </div>
+    
+    <div class="myOrderDiv" >
+      <div class="myOrder left">我的订单</div>
+      <div class="readAll right">
+          <!-- <div class="readAll right" on-tap="goToMyOrderPage()"> -->
+        查看全部>
+      </div>
+      <div class="order"></div>
+    </div>
+  </ion-content>
+  

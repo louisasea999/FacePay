@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      支付
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <!-- <ion-list>
+    <ion-list-header>Follow us on Twitter</ion-list-header>
+    <ion-item>
+      <ion-icon name="ionic" item-start></ion-icon>
+      @myframework
+    </ion-item>
+  </ion-list> -->
+  <div class="PayVedio" on-tap="getH5Cameral()" >
+      <video id="video" src="">Video sream is no available</video>
+      <canvas id="canvas" width="300" height="300">canvas is support</canvas>
+      <img id="iimg" alt="">
+    </div>
+    <!-- <div class="PayOrderDiv" *ngIf="isUser"> -->
+      <div class="PayOrderDiv" >
+        <div class="myOrder left">我的订单</div>
+        <div class="readAll right" on-tap="goToMyOrderPage()">
+          查看全部>
+        </div>
+      <button ion-button on-tap="getTradeNumber()">获取订单</button>
+        
+        <div class="order"></div>
+      </div>
+</ion-content>

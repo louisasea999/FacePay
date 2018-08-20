@@ -1,0 +1,21 @@
+  <ion-content class="previewPage">
+    <!-- <div class="previewTab">
+        <ion-icon class="closeBack" name="close" on-tap="backToMine(e)"></ion-icon>   
+    </div> -->
+    <div class="wyy_camera">
+        <div class="left_side">
+            <img class="compare_image" [src]="base64" ref="image" alt="">
+            <!-- <div class="div_mask"></div> -->
+        </div>
+        <div class="left_side2" [ngStyle]="{'background-image':'url('+base64+')'}">
+        </div>
+        <!-- <canvas id="canvas2" width="300" height="300">canvas is support</canvas> -->
+        <button  class = button ion-button on-tap="setZoom()">zoom++</button>
+        <div class="video_div">
+            <div v-if="showStream" class="catch_btn" on-tap="takePicture()"></div>
+            <div v-if="showStream" class="back_btn" on-tap="backToMine(e)"></div>
+            <!-- <div v-if="!showStream" class="cancel_btn" v-on:click="cancelImage"></div> -->
+            <!-- <div v-if="!showStream" class="confirm_btn" v-on:click="confirmImage"></div> -->
+        </div>
+      </div> 
+  </ion-content>

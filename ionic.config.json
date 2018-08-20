@@ -1,0 +1,17 @@
+{
+  "name": "faceApp",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "ionic-angular",
+  "proxies": [
+    {
+      "path": "/test",
+      "proxyUrl": "https://api-cn.faceplusplus.com"
+    },
+    {
+      "path": "/boba",
+      "proxyUrl": "http://104.45.155.62:8080"
+    }
+  ]
+}

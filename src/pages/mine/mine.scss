@@ -1,0 +1,33 @@
+.myDiv{
+    .registerLogin{
+        font-size: 1.5rem;
+        line-height: 6rem;
+        margin-left:10rem;
+    }
+    @extend .clear;
+    background-color:rgb(246,246,246);
+    height:10rem;
+    padding-top: 3rem;
+}
+.profilePhoto{
+    height:9rem;
+    width: 9rem;
+    border-radius: 50%;
+    background-color: gray;
+    // background-image: url('../assets/imgs/iu.jpeg');
+    // background-size: 100%;
+    position: relative;
+    top:-8rem;
+    overflow: hidden;
+}
+.myOrderDiv{
+    height:25rem;
+    margin-top:-6rem; 
+    .myOrder{
+        font-weight: bold;
+    }
+    .readAll{
+        font-size: 1rem;
+        color:gray;
+    }
+}

@@ -1,0 +1,82 @@
+.orderDiv{
+    margin-top:.5rem;
+    position:absolute;
+    top: 0;
+    bottom: 0;
+    width:100%;
+    .order_item{
+        // position: absolute;
+        border-top:1px solid rgb(225,225,225);
+        margin-bottom: .5rem;
+        // border-bottom:1px solid rgb(225,225,225);
+        >div{
+            padding-left:1rem; 
+            padding-right:1rem; 
+        }
+        .tab1{
+            .order_saler{
+                width:60%;
+                font-weight: bold
+            }
+            .order_status{
+                width:30%;
+                color:#e4393c;
+                font-size: 12px;                
+            }
+            height:3rem;
+            line-height:3rem;
+            background-color: #fff;
+        }
+        .tab2{
+            padding: 1rem;
+            img{
+                width:8rem;
+                height:8rem;
+            }
+            .goods_name{
+                height:8rem;
+                padding-left: 1rem;
+                .name_text{
+                    line-height: 8rem;
+                }
+            }
+            .clear{
+                clear: both;
+            }
+        }
+        .tab3{
+            background-color:#fff; 
+            height:3rem;
+            span{
+                line-height: 3rem;
+            }
+            span:nth-child(1){
+                font-weight: bold;
+                padding-left: 1rem;
+                font-size: 18px;
+            }
+        }
+        .tab4{
+            // position: relative;
+            // bottom: -3rem;
+            height:4rem;
+            background-color: #fff;
+            margin-top:2px;
+            .goPay{
+                // display: inline-block;
+                line-height: 2rem;
+                margin-top:0.6rem;
+                font-size: 12px;
+                border: 1px solid #f9d2d3;
+                border-top-left-radius: 2rem;
+                border-top-right-radius: 2rem;
+                border-bottom-left-radius: 2rem;
+                border-bottom-right-radius: 2rem;
+                padding:0.25rem 1.5rem;
+                color:#e4393c;                
+            }
+        }
+    }
+    background-color:rgb(249,249,249); 
+    
+}

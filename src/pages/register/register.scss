@@ -1,0 +1,39 @@
+.registerTab{
+    height:3rem;
+    .closeBack{
+        width:3rem;
+        // padding-left:1rem;
+        font-weight: bold; 
+        font-size: 3rem;
+        line-height: 3rem;
+    }
+    
+}
+.myVedio{
+    height:25rem;
+    width:25rem;
+    // border:0.5rem solid rgb(57,133,255); 
+    border:0.5rem solid green; 
+    border-radius: 50%;
+    background-color: gray;
+    // background-image: url('../assets/imgs/iu.jpeg');
+    // background-size:100%;
+    margin:0 auto;
+    video{
+        display: none;
+    }
+    canvas{
+        // width:250px;
+        // height:250px;
+        // display: none;
+        
+    }
+    overflow: hidden;
+}
+.alipayBtn{
+    text-align: center;
+    margin:5rem auto;
+    button{
+        width:80%;
+    }
+}
