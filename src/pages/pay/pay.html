@@ -1,7 +1,7 @@
 <ion-header>
   <ion-navbar>
     <ion-title>
-      下单
+      支付
     </ion-title>
   </ion-navbar>
 </ion-header>
@@ -15,8 +15,8 @@
     </ion-item>
   </ion-list> -->
   <div class="PayVedio" on-tap="getH5Cameral()" >
-      <video id="video1" src="">Video sream is no available</video>
-      <canvas id="canvas1" width="300" height="300">canvas is support</canvas>
+      <video id="video3" src="">Video sream is no available</video>
+      <canvas id="canvas3" width="300" height="300">canvas is support</canvas>
       <img id="iimg" alt="">
     </div>
     <div class="PayOrderDiv" *ngIf="isUser">
@@ -25,7 +25,7 @@
         <div class="readAll right" on-tap="goToMyOrderPage()">
           查看全部>
         </div> -->
-      <button ion-button on-tap="getTradeNumber()">商家下订单</button>
+      <button ion-button on-tap="goPay()">支付订单</button>
         
         <!-- <div class="order"></div> -->
       </div>

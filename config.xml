@@ -89,7 +89,7 @@
         <variable name="APP_ID" value="2018062660475092" />
     </plugin>
     <plugin name="jpush-phonegap-plugin" spec="^3.4.3">
-        <variable name="APP_KEY" value="“3b7d0a157740f6d5fd8802b6”" />
+        <variable name="APP_KEY" value="3b7d0a157740f6d5fd8802b6" />
     </plugin>
     <engine name="android" spec="^7.1.1" />
     <engine name="browser" spec="^5.0.4" />

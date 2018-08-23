@@ -2,21 +2,22 @@ import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { AlertController } from 'ionic-angular';
 import { OrderPage } from '../orders/order';
+import { NavParams } from 'ionic-angular';
 
 import { wyHttpService } from '../../config/http.service'
 import { UserService } from '../../config/user.service'
 
 @Component({
-  selector: 'page-contact',
-  templateUrl: 'contact.html'
+  selector: 'page-pay',
+  templateUrl: 'pay.html'
 })
-export class ContactPage {
+export class PayPage {
 
   constructor(public navCtrl: NavController,
     private http: wyHttpService,
     private userservice: UserService,
-    private promptAlert: AlertController) {
-
+    private promptAlert: AlertController,
+    private navParams: NavParams) {
   }
   streamTrack = [];
   imgBase = '';
@@ -31,21 +32,23 @@ export class ContactPage {
   canvas = null;
   ctx = null;
   isUser: boolean = false;
-  cameraOn:boolean=false;
+  tradeNumber:string=null;
+  isCamraOn:boolean=false;
   ngOnInit() {
     // setTimeout(this.getH5Cameral(), 0)
     console.log('iii');
-    this.video = document.getElementById('video1');
-    this.canvas = document.getElementById('canvas1');
+    this.video = document.getElementById('video3');
+    this.canvas = document.getElementById('canvas3');
     this.ctx = this.canvas.getContext('2d');
     this.getH5Cameral()
-
+    console.log(this.navParams)
+    this.tradeNumber=this.navParams['data']['tradeNumber'];
+    console.log(this.tradeNumber)
   }
   getH5Cameral() {
     let _self = this;
-    console.log('123',this.streamTrack.length)
-    
-    if (this.cameraOn) return
+    if (this.isCamraOn) return
+    console.log('123')
     // video.srcObject = null; 
     // console.log(navigator.mediaDevices)
     // console.log(navigator.mozGetUserMedia)
@@ -108,7 +111,7 @@ export class ContactPage {
 
       this.video.srcObject = stream;
       // console.log('ww',_self.video.videoHeight)
-      this.cameraOn=true;
+      _self.isCamraOn=true;
       this.video.onloadedmetadata = function (e) {
         _self.video.play();
       };
@@ -143,7 +146,6 @@ export class ContactPage {
     if (this.streamTrack.length == 0) return;
     // let stream = video.srcObject;
     // let tracks = stream.getTracks();
-    this.cameraOn=false;
     this.streamTrack.forEach(function (track) {
       track.stop();
     });
@@ -154,6 +156,7 @@ export class ContactPage {
     // video.stop();
     clearInterval(this.int1);
     this.int1 = null;
+    this.isCamraOn=false; 
     // clearInterval(this.int2)
   }
   askServer(base64) {
@@ -270,6 +273,7 @@ export class ContactPage {
               // this.register(face_token, data['phonenumber'], base64)
               if (data['phonenumber'] == _self.phoneNumber) {
                 _self.isUser = true;
+                _self.goPay()
               }else{
                 return false;
               }
@@ -284,50 +288,17 @@ export class ContactPage {
     console.log('dd')
     this.navCtrl.push(OrderPage)
   }
-  getTradeNumber() {
-    let _self = this;
-    // if (!this.userservice.userInfo.user_id) {
-    //   alert('获取用户信息错误')
-    //   return;
-    // }
-    // this.user_id='2088402239622912'
-
-    console.log('user_id', this.user_id)
-    return this.http.getTradeNumber(this.user_id).then((data: any) => {
-      console.log(data.alipay_trade_create_response.trade_no)
-      // _self.tradePay(data.alipay_trade_create_response.trade_no)
-      _self.goPush(data.alipay_trade_create_response.trade_no)
-    }
-    ).catch(err => {
-      console.log(err)
-    })
-  }
-  goPush(tradeNumber) {
-    console.log(tradeNumber)
-
-    if (!tradeNumber) {return;}
-    this.http.jpushPost(tradeNumber).then(data => {
-      console.log(data)
-      const prompt = this.promptAlert.create({
-        title: '提示',
-        message: "下单成功",
-        buttons: [
-          {
-            text: '确认',
-            handler: data => {
-
-            }
-          }
-        ]
-      });
-      prompt.present();
-    }, err => {
-      console.log(err)
-    });
+  goPay() {
+    console.log(this.tradeNumber)
+    if (!this.tradeNumber) {return;}
+    let url=`alipays://platformapi/startapp?saId=10000007&clientVersion=3.7.0.0718&qrcode=https%3A%2F%2Fneighbour.southeastasia.cloudapp.azure.com%2FaliPay%2Findex.html%3FtradeNo%3D${this.tradeNumber}`
+    window.open(url,'_system', 'location=yes');
   }
   ionViewWillLeave() {
     console.log('willleave')
     console.log(this.userservice.userInfo)
     this.stopCameral();
   }
+  // window.location.href='alipays://platformapi/startapp?saId=10000007&clientVersion=3.7.0.0718&qrcode=http%3A%2F%2F172.20.10.11%3A8080%2FAlipay%2Findex.html%3FtradeNo%3D2018072421001004910578660565'
+
 }

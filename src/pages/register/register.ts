@@ -47,8 +47,7 @@ export class RegisterPage {
         this.video = document.getElementById('video2');
         this.canvas = document.getElementById('canvas2');
         this.ctx = this.canvas.getContext('2d');
-        // this.getH5Cameral()
-
+        this.getH5Cameral()
     }
     backToMine(e) {
         // console.log('taped', e)
@@ -257,7 +256,6 @@ export class RegisterPage {
                 loginSuccessAlert.present();
             } else {
                 //查不到请求注册
-                this.getSignInfo()
                 this.showPrompt(data.faces[0].face_token, base64)
             }
         }).catch(err => {
@@ -266,7 +264,6 @@ export class RegisterPage {
         this.stopCameral();
     }
     showPrompt(face_token, base64) {
-        this.http.createFaceSet()
         let _self = this;
         const prompt = this.promptAlert.create({
             title: '提示',
@@ -302,7 +299,7 @@ export class RegisterPage {
                         _self.imgBase = base64;
                         _self.face_token = face_token;
                         _self.phoneNumber = data['phonenumber']
-                        _self.getAuth(_self.authSign)
+                        _self.getSignInfo()
                     }
                 }
             ]
@@ -337,13 +334,16 @@ export class RegisterPage {
     }
     //注册
     register() {
-        if (!this.face_token || !this.phoneNumber || this.user_id) {
+        console.log(this.face_token)
+        console.log(this.phoneNumber)
+        console.log(this.user_id)
+        if (!this.face_token||!this.phoneNumber||!this.user_id) {
             alert('信息错误')
             return
         }
         return Promise.all([this.http.registerDB(this.face_token, this.phoneNumber, this.user_id), this.http.faceSetAddface(this.face_token)]).then(data => {
-            // Promise.all([this.http.registerDB('dcc9adbb8533bc083083bef62795a8e7', 6499,'2088402239622912'),this.http.faceSetAddface(this.face_token)]).then(data=>{
-            console.log(data)
+            // Promise.all([this.http.registerDB('dcc9adbb8533bc083083bef62795a8e7', 6499,'2088402239622912')]).then(data=>{
+            console.log('ss',data)
             this.userservice.login(this.face_token, this.imgBase, null, this.user_id, this.phoneNumber)
             let registerSuccessAlert = this.promptAlert.create({
                 title: '提示',
@@ -360,6 +360,8 @@ export class RegisterPage {
             })
             registerSuccessAlert.present();
         }).catch(err => {
+            console.log('ee')
+            
             console.log(err)
         })
         // console.log('dd')
@@ -431,24 +433,24 @@ export class RegisterPage {
         this.http.getSignInfo(this.userservice.userInfo.targetId).then((data: any) => {
             console.log(data);
             _self.authSign = data.sign
-            // _self.getAuth(string)
+            _self.getAuth()
         }).catch(err => {
             console.log(err)
         })
     }
     //支付宝授权
-    getAuth(string: any) {
+    getAuth() {
         let _self = this;
         // string = string ? string : "apiname=com.alipay.account.auth&app_id=2018062660475092&app_name=mc&auth_type=AUTHACCOUNT&biz_type=openservice&method=alipay.open.auth.sdk.code.get&pid=2088131533593230&product_id=APP_FAST_LOGIN&scope=kuaijie&sign_type=RSA&target_id=wz1433223&sign=fzgofPWWGppB%2FQYUpxg%2F16p9vG5JqWVbtSrgFLp8tYEoQzLOUulmcrmFrOSaCTMHjzU2ZXWsKdp%2BJqRMhxTNSIKBjEToenyg8BtFmdAJG1QT28VsMpzC63vjbb6Dw3xWDnsUp1edNs81dx8Z%2BcFIqlrgnAwvp15Jy6yqYL4NwKtJu%2B8fxsGLwQCeEqlwnSBzeyoBTpa%2BKmjXIccQykwKM12eHdaLJkoRHUXv%2BwE8tBXx2GxnNDRh1xEwRaofXEYhcEf7OuCWV45QbZhvQVDzNT1XDjQ9dYunu4N5eAu2hYmyXNy55MwEQeuXxqqBWNG%2FL%2Bqvsy%2Bcw%2FvlaMCd5rgHIQ%3D%3D";
         // alert('android')
         // string=`apiname=com.alipay.account.auth&app_id=2018062660475092&app_name=mc&auth_type=AUTHACCOUNT&biz_type=openservice&method=alipay.open.auth.sdk.code.get&pid=2088131533593230&product_id=APP_FAST_LOGIN&scope=kuaijie&sign_type=RSA&target_id=1532507117357&sign=AXKe%2Btm2LoLaQ7n7UiH6RxN7A%2BKZWuENrJwjZnpS1nFGzypoollKqo6SP59ecImRFEqPfDRk1rnX7Sxy7ibnfckuHtLY8X8c8sfZKx%2FVW7vkfMftAq6F18mP9luaignkQBPm%2Fc2nNktAMGbmQ79ZqtVAh2se0A%2FVzM06DJJwkIatUe9PjxpbEwmfT1XqcIhAvR99vNIhTpmbHAjSdMYDJNbqyUn58bgb46wirFfD%2FyzZY91wMXq5IIkPkKW%2FjEj1r4YvU5ViC%2FL7ayD%2Bj5Uie385xvtY7NSmXcvFXQJ%2Bv9E1iXQCYi4zqr6wrMkpW06we1U%2Fg4212m2GBU7vPtY6Dw%3D%3D`
-        if (!string) {
+        if (!_self.authSign) {
             alert('授权签名错误')
             return
         }
-        console.log(string)
+        console.log(_self.authSign)
         // window.Android.getAuthCode(string)
-        cordova.plugins.alipay.payment(string, function success(e) {
+        cordova.plugins.alipay.payment(_self.authSign, function success(e) {
             console.log('ff')
             console.log(e)
             if (e.resultStatus == '9000') {
@@ -470,7 +472,7 @@ export class RegisterPage {
                     }
                 ]
             })
-            //         registerSuccessAlert.present();
+            authErrorAlert.present();
         });
     }
     getUserId(code) {
@@ -488,13 +490,7 @@ export class RegisterPage {
             console.log(err)
         })
     }
-    removeAllFaces() {
-        return this.http.removeAllFaces().then(data => {
-            console.log(data);
-        }).catch(err => {
-            console.log(err)
-        })
-    }
+    
     // window.getCode=function(arg) {
     //     console.log('11', arg)
     //     alert(arg);

@@ -12,6 +12,11 @@
     {
       "path": "/boba",
       "proxyUrl": "http://104.45.155.62:8080"
+    },
+    {
+      "path": "/jpush",
+      "proxyUrl": "https://bjapi.push.jiguang.cn"
     }
+    
   ]
 }

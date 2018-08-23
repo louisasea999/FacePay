@@ -8,6 +8,7 @@ import { AboutPage } from '../pages/about/about';
 import { ContactPage } from '../pages/contact/contact';
 import { HomePage } from '../pages/home/home';
 import { MinePage } from '../pages/mine/mine';
+import { PayPage } from '../pages/pay/pay';
 import { RegisterPage } from '../pages/register/register';
 import { OrderPage } from '../pages/orders/order';
 import { TabsPage } from '../pages/tabs/tabs';
@@ -37,6 +38,7 @@ import { CameraPreviewService } from '../providers/cameraPreview.service';
     RegisterPage,
     OrderPage,
     TabsPage,
+    PayPage,
     PreviewPage  
   ],
   imports: [
@@ -54,6 +56,7 @@ import { CameraPreviewService } from '../providers/cameraPreview.service';
     RegisterPage,
     OrderPage,
     TabsPage,
+    PayPage,
     PreviewPage
   ],
   providers: [

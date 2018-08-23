@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core'
 import { HttpClient, HttpHeaders } from '@angular/common/http'
 // import { Observable } from 'rxjs/Observable';
 import 'rxjs/Rx'
+// import { window } from 'rxjs/operator/window';
 // if (process.env.IONIC_ENV === 'prod') { 
 //     console.log('we got a production buildp'); 
 // } else { 
@@ -176,13 +177,13 @@ export class wyHttpService {
     // 移除一个FaceSet中的某些或者全部face_token
     // 需要移除的人脸标识字符串，可以是一个或者多个face_token组成，用逗号分隔。最多不能超过1,000个face_token
     //注：face_tokens字符串传入“RemoveAllFaceTokens”则会移除FaceSet内所有的face_token
-    removeAllFaces(){
+    removeAllFaces(facetoken:string){
         let url = 'https://api-cn.faceplusplus.com/facepp/v3/faceset/removeface'
         let params = resetParams({
             api_key: this.api_key,
             api_secret: this.api_secret,
-            faceset_token: "3fd3c3e51cd9fca2927e2811ef44d1e8",
-            face_tokens: 'RemoveAllFaceTokens'
+            faceset_token: "cef667c0a8b05c0fd63f759526961981",
+            face_tokens: facetoken
         })
         return this.http.post(url, params, httpOptions).toPromise()
     }
@@ -212,20 +213,20 @@ export class wyHttpService {
     registerDB(face_token,phonenumber,user_id){
         // let url=`/boba/api/add`
         let url=`${baseUrl}/api/add`
-        // let params=resetParams({
-        //     face_id:face_token,
-        //     // face_id:'bdc98ac97e05407786ded5cf88c4c189',
-        //     phoneNumber:phonenumber,
-        //     user_id:user_id
-        //     // alipay_userid:aliAccount
-        // })
         let params=resetParams({
-            face_id:'bdc98ac97e05407786ded5cf88c4c189',
+            face_id:face_token,
             // face_id:'bdc98ac97e05407786ded5cf88c4c189',
-            phoneNumber:'222',
-            user_id:new Date().getTime()
+            phoneNumber:phonenumber,
+            user_id:user_id
             // alipay_userid:aliAccount
         })
+        // let params=resetParams({
+        //     face_id:'bdc98ac97e05407786ded5cf88c4c189',
+        //     // face_id:'bdc98ac97e05407786ded5cf88c4c189',
+        //     phoneNumber:'222',
+        //     user_id:new Date().getTime()
+        //     // alipay_userid:aliAccount
+        // })
         return this.http.post(url,params,httpOptions).toPromise()
     }
     //getlogin
@@ -258,23 +259,23 @@ export class wyHttpService {
         let url=`${baseUrl2}/getAuthToken`
         let params = resetParams({
             code:code
-            // code:'4ba8a9ac5a39435d8de87efd5130YC25'
+            // code:'5edf03d0c2714650b34477896c0fNA25'
         })
         return this.http.post(url,params,httpOptions).toPromise()
     }
     getTradeNumber(userId){
         // let url=`http://10.10.0.124:8082/createOrder`
-        let url=`http://192.168.0.5:8082/createOrder`
+        // let url=`http://192.168.0.5:8082/createOrder`
         
         
         
         // let url=`http://127.0.0.1:8082/createOrder`
         // let url=`http://neighbour.southeastasia.cloudapp.azure.com:8082/createOrder`
-        // let url=`http://52.163.213.42:8082/createOrder`
+        let url=`${baseUrl2}/createOrder`
         // let url=`http://172.20.10.11:8082/createOrder`
         let params = resetParams({
-            userId:new Date().getTime()
-            // userId:userId
+            outTradeNo:new Date().getTime(),
+            userId:userId
         })
         return this.http.post(url,params,httpOptions).toPromise().then(data => {
             // console.log(data)
@@ -283,5 +284,66 @@ export class wyHttpService {
             console.log(err)
             return Promise.reject(err)
         })
+    }
+    jpushPost(number){
+        // let url=`/jpush/v3/push`
+        let url=`https://bjapi.push.jiguang.cn/v3/push`
+        
+        let authcode="3b7d0a157740f6d5fd8802b6:a5b1028a870aca4ff8dc1b32"
+        let base64=window.btoa(authcode)
+        console.log(base64)
+        console.log(window.atob(base64))
+        let headers= new HttpHeaders({
+            // "Content-Type": "application/json"
+            Authorization:`Basic ${base64}`
+        })
+        // headers.append('Authorization',base64)
+        const httpOptions = {
+            headers:headers
+        }
+        let data={
+            // "cid": "8103a4c628a0b98974ec1949-711261d4-5f17-4d2f-a855-5e5a8909b26e",
+            "platform": "android",
+            "audience": 'all',
+            "notification": {
+                "android": {
+                    "alert": "你有一张待支付订单",
+                    "title": "Send to Android",
+                    "builder_id": 1,
+                    "extras": {
+                        "tradeNum": number
+                    }
+                },
+                // "ios": {
+                //     "alert": "Hi, JPush!",
+                //     "sound": "default",
+                //     "badge": "+1",
+                //     "extras": {
+                //         "newsid": 321
+                //     }
+                // }
+            },
+            "message": {
+                "msg_content": "Hi,JPush",
+                "content_type": "text",
+                "title": "msg",
+                "extras": {
+                    "teadeNum": number
+                }
+            },
+            // "sms_message":{
+            //    "temp_id":1250,
+            //    "temp_para":{
+            //         "code":"123456"
+            //    },
+            //     "delay_time":3600
+            // },
+            // "options": {
+            //     "time_to_live": 60,
+            //     "apns_production": false,
+            //     "apns_collapse_id":"jiguang_test_201706011100"
+            // }
+        }
+        return this.http.post(url,data,httpOptions).toPromise()
     }
 }
