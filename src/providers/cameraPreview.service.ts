@@ -1,24 +1,28 @@
 import { Injectable } from '@angular/core'
 import { CameraPreview} from '@ionic-native/camera-preview';
+import { window } from 'rxjs/operators/window';
 
 @Injectable()
 export class CameraPreviewService {
 
-    constructor(private cameraPreview: CameraPreview) { }
+    constructor(private cameraPreview: CameraPreview) { 
+        // cameraPreview.setFlashMode('off')
+    }
     // camera options (Size and location). In the following example, the preview uses the rear camera and display the preview in the back of the webview
 
 
     // start camera
-    startCamera() {
-        const cameraPreviewOpts = {
+    startCamera(options) {
+        console.log(options)
+        let cameraPreviewOpts = {
             x: 0,
-            y: 0,
-            width: window.screen.width,
-            // width: 720,
-            height: window.screen.height,
-            // height: 1280,
-            camera: 'rear',
-            tapPhoto: true,
+            y: 300,
+            // width: window['screen']['width'],
+            // width: 375,
+            // height: window['screen']['height'],
+            // height: 500,
+            camera: 'front',
+            tapPhoto: false,
             previewDrag: true,
             toBack: true,
             alpha: 1
@@ -48,13 +52,14 @@ export class CameraPreviewService {
     // take a picture
     takePicture() {
         const pictureOpts = {
-            width: window.screen.width,
-            // width: 720,
-            // height: 1280,
-            height: window.screen.height,
-            // quality: 100
+            // width: window['screen']['width'],
+            shutterSound: false,
+            width: 500,
+            height: 500,
+            // height: window['screen']['height'],
+            quality: 100
         }
-        console.log(pictureOpts.width)
+        // console.log(pictureOpts.width)
         return this.cameraPreview.takePicture(pictureOpts)
     }
 
@@ -63,7 +68,6 @@ export class CameraPreviewService {
     // Switch camera
     SwitchCamera() {
         this.cameraPreview.switchCamera();
-
     }
 
     // set color effect to negative
@@ -79,5 +83,14 @@ export class CameraPreviewService {
     }
     setZoom(zoom:number){
         return this.cameraPreview.setZoom(zoom);
+    }
+    getSupportedFlashModes(){
+        return this.cameraPreview.getSupportedFlashModes()
+    }
+    setFlashMode(flashMode){
+        return this.cameraPreview.setFlashMode(flashMode)
+    }
+    getFlashMode(){
+        return this.cameraPreview.getFlashMode()
     }
 }

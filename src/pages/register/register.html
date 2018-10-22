@@ -1,23 +1,58 @@
-    <ion-content padding>
-      <div class="registerTab">
-          <ion-icon class="closeBack" name="close" on-tap="backToMine(e)"></ion-icon>   
-      </div>
+<ion-content padding class="registerPage">
+  <div>
+    <div class="registerTab">
+      <ion-icon class="closeBack" name="close" on-tap="backToMine(e)"></ion-icon>
+    </div>
     <!-- <p>this is for register or login</p> -->
-    <div class="myVedio" on-tap="getH5Cameral()" >
+    <div class="myVedio" on-tap="takePicture()">
       <video id="video2" src="">Video sream is no available</video>
       <canvas id="canvas2" width="300" height="300">canvas is support</canvas>
-      <img id="iimg" alt="">
+      <img id="iimg" src="../../assets/imgs/iu.jpeg" alt="">
     </div>
-    <!-- <div class="alipayBtn">
-      <button ion-button on-tap="getSignInfo()">获取支付宝授权字符串</button>
+    <div class="circle-load" *ngIf="previewOn">
+      <svg width="300px" height="300px" version="1.1" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="150" cy="150" r="145" stroke-width="10" stroke="gainsboro" fill="none"></circle>
+        <circle cx="150" cy="150" r="145" stroke-width="10" stroke="darkturquoise" fill="none" class="circle-load-svg"></circle>
+      </svg>
+    </div>
+    <!-- <img src="../../assets/imgs/iu.jpeg" alt=""> -->
+  </div>
+  <div class="cardList">
+    <ion-list>
+      <ion-item>
+        <ion-avatar item-start>
+          <img src="../../assets/imgs/zhifubao.png">
+        </ion-avatar>
+        <ion-label>支付宝授权</ion-label>
+        <ion-radio checked="true" value="go"></ion-radio>
+        <!-- <p>亿万用户的选择，更安全快捷</p> -->
+        <!-- <ion-radio checked="true" value="go"></ion-radio> -->
+      </ion-item>
+    <!-- </ion-list> -->
+    <!-- <ion-list> -->
+      <ion-item>
+        <ion-avatar item-start>
+          <img src="../../assets/imgs/wechatlogo.png">
+        </ion-avatar>
+        <ion-label>微信授权</ion-label>
+        <ion-radio checked="true" value="go"></ion-radio>
+        <!-- <p>亿万用户的选择，更安全快捷</p> -->
+        <!-- <ion-radio checked="true" value="go"></ion-radio> -->
+      </ion-item>
+    </ion-list>
+
+  </div>
+
+  <div class="alipayBtn">
+    <!-- <button ion-button on-tap="getSignInfo()">获取支付宝授权字符串</button>
       <button ion-button on-tap="getAuth()">支付宝授权</button>
       <button ion-button on-tap="getTradeNumber()">获取订单</button>
       <button ion-button on-tap="tradePay('jj')">支付</button>
       <button ion-button on-tap="register()">register()</button>
-      <button ion-button on-tap="getUserId()">getUserId</button>
-      
-      
-    </div> -->
-    
-  </ion-content>
-  
+      <button ion-button on-tap="getUserId()">getUserId</button> -->
+    <!-- <button ion-button on-tap="goToQRcodePage()">getUserId</button> -->
+
+
+  </div>
+
+</ion-content>

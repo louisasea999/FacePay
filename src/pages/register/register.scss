@@ -1,39 +1,73 @@
-.registerTab{
-    height:3rem;
-    .closeBack{
-        width:3rem;
-        // padding-left:1rem;
-        font-weight: bold; 
-        font-size: 3rem;
-        line-height: 3rem;
-    }
-    
-}
-.myVedio{
-    height:25rem;
-    width:25rem;
-    // border:0.5rem solid rgb(57,133,255); 
-    border:0.5rem solid green; 
-    border-radius: 50%;
-    background-color: gray;
-    // background-image: url('../assets/imgs/iu.jpeg');
-    // background-size:100%;
-    margin:0 auto;
-    video{
-        display: none;
-    }
-    canvas{
-        // width:250px;
-        // height:250px;
-        // display: none;
+.registerPage{
+    position: relative;
+    background: rgb(232,233,232);
+    .registerTab{
+        height:3rem;
+        .closeBack{
+            width:3rem;
+            // padding-left:1rem;
+            font-weight: bold; 
+            font-size: 3rem;
+            line-height: 3rem;
+        }
         
     }
-    overflow: hidden;
-}
-.alipayBtn{
-    text-align: center;
-    margin:5rem auto;
-    button{
-        width:80%;
+    .myVedio{
+        position: absolute;
+        height:300px;
+        width:300px;
+        top: 4rem;
+        left: 50%;
+        transform: translateX(-50%);
+        border:10px solid darkturquoise;  
+        border-radius: 50%;
+        background-color: gray;
+        // background-image: url('../assets/imgs/iu.jpeg');
+        // background-size:100%;
+        margin:0 auto;
+        video{
+            display: none;
+        }
+        canvas{
+            // width:250px;
+            // height:250px;
+            // display: none;        
+        }
+        overflow: hidden;
+    }
+    .cardList{
+        margin-top:350px;
+    }
+    .alipayBtn{
+        text-align: center;
+        margin:5rem auto;
+        button{
+            width:80%;
+        }
+        
+    }
+    .circle-load {
+        position: absolute;
+        height:300px;
+        width:300px;
+        top: 4rem;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    .circle-load-svg {
+        stroke-dasharray: 0 911;
+        animation: rot 1s linear 1;
+        animation-fill-mode: forwards 
+    }
+    
+    @keyframes rot {
+        // 0% {
+        //     stroke-dasharray: 0 0;
+        // }
+        100% {
+            stroke-dasharray: 911 911;
+        }
     }
 }
+

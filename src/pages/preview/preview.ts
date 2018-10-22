@@ -40,7 +40,7 @@ export class PreviewPage {
         console.log(dom.clientHeight)
         console.log(dom.style)
         this.statusBar.hide();
-        this.cameraPreview.startCamera().then(data => {
+        this.cameraPreview.startCamera({}).then(data => {
             console.log(data)
         }).catch(err => {
             console.log(err)

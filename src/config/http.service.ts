@@ -210,14 +210,15 @@ export class wyHttpService {
             })
     }
     //register注册
-    registerDB(face_token,phonenumber,user_id){
+    registerDB(face_token,phonenumber){
         // let url=`/boba/api/add`
         let url=`${baseUrl}/api/add`
         let params=resetParams({
             face_id:face_token,
             // face_id:'bdc98ac97e05407786ded5cf88c4c189',
             phoneNumber:phonenumber,
-            user_id:user_id
+            user_id:null,
+            openid:null
             // alipay_userid:aliAccount
         })
         // let params=resetParams({
@@ -285,9 +286,10 @@ export class wyHttpService {
             return Promise.reject(err)
         })
     }
-    jpushPost(number){
+    jpushPost(number,user_id){
         // let url=`/jpush/v3/push`
         let url=`https://bjapi.push.jiguang.cn/v3/push`
+        // let url=`apis/v3/push`
         
         let authcode="3b7d0a157740f6d5fd8802b6:a5b1028a870aca4ff8dc1b32"
         let base64=window.btoa(authcode)
@@ -304,7 +306,9 @@ export class wyHttpService {
         let data={
             // "cid": "8103a4c628a0b98974ec1949-711261d4-5f17-4d2f-a855-5e5a8909b26e",
             "platform": "android",
-            "audience": 'all',
+            "audience": {
+                "alias":[user_id]
+            },
             "notification": {
                 "android": {
                     "alert": "你有一张待支付订单",
@@ -345,5 +349,66 @@ export class wyHttpService {
             // }
         }
         return this.http.post(url,data,httpOptions).toPromise()
+    }
+    getQRcode(data){
+        // this.http.get
+    }
+    wechatUnifiedOrder(){
+        // let url="https://api.mch.weixin.qq.com/pay/unifiedorder";
+        let url=`/wechat/pay/unifiedorder`
+        
+        let nonce_str=this.randomString(32);//随机数
+        console.log('nonce_str',nonce_str);        
+        let data={
+            appid:'wx5055b021a210708c',
+            attach:'attach',
+            body:'app支付测试',
+            mch_id:'1469962302',
+            nonce_str:nonce_str,
+            notify_url:'http://neighbour.southeastasia.cloudapp.azure.com/Alipay/platform.html',
+            out_trade_no:'1415659990',
+            spbill_create_ip:'14.23.150.211',
+            total_fee:'0.01',
+            trade_type:'JSAPI',
+        }
+        let stringA=`appid=wx5055b021a210708c&attach=test&body=apptest&mch_id=1469962302&nonce_str=${nonce_str}&notify_url=http://neighbour.southeastasia.cloudapp.azure.com/Alipay/platform.html&out_trade_no=1415659990&spbill_create_ip=14.23.150.211&sub_mch_id=1472856802&total_fee=0.01&trade_type=JSAPI`
+        let stringSigntemp=stringA+"&key=F3E006BA853A18421ECE7A5723C92741"
+        console.log(window['hex_md5'](stringSigntemp))
+        let params={
+            data:`<xml>
+            <appid>wx5055b021a210708c</appid>
+            <attach>test</attach>
+            <body>apptest</body>
+            <mch_id>1469962302</mch_id>
+            <nonce_str>${nonce_str}</nonce_str>
+            <notify_url>http://neighbour.southeastasia.cloudapp.azure.com/Alipay/platform.html</notify_url>
+            <out_trade_no>1415659990</out_trade_no>
+            <spbill_create_ip>14.23.150.211</spbill_create_ip>
+            <sub_mch_id>1472856802</sub_mch_id>
+            <total_fee>0.01</total_fee>
+            <trade_type>APP</trade_type>
+            <sign>${window['hex_md5'](stringSigntemp)}</sign>
+         </xml>`
+        }
+        this.http.post(url,params.data).toPromise().then(data=>{
+            console.log(data)
+        }).catch(err=>{
+            console.log(err)
+        })
+        
+    }
+    //随机数生成
+    randomString(len) {
+        　　len = len || 32;
+        　　var $chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678';    /****默认去掉了容易混淆的字符oOLl,9gq,Vv,Uu,I1****/
+        　　var maxPos = $chars.length;
+        　　var pwd = '';
+        　　for (let i = 0; i < len; i++) {
+        　　　　pwd += $chars.charAt(Math.floor(Math.random() * maxPos));
+        　　}
+        　　return pwd;
+        }
+    aliPayOrder(){
+        
     }
 }

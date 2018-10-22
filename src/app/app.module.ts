@@ -13,6 +13,7 @@ import { RegisterPage } from '../pages/register/register';
 import { OrderPage } from '../pages/orders/order';
 import { TabsPage } from '../pages/tabs/tabs';
 import { PreviewPage } from '../pages/preview/preview';
+import { QRcodePage } from '../pages/qrcode/qrcode';
 import { JPush } from '@jiguang-ionic/jpush';
 
 
@@ -25,6 +26,8 @@ import { Camera } from '@ionic-native/camera'
 import { wyHttpService } from '../config/http.service'
 import { UserService } from '../config/user.service'
 import { CameraPreview } from '@ionic-native/camera-preview';
+import { Device } from '@ionic-native/device';
+import { Wechat } from '@ionic-native/wechat';
 
 import { CameraPreviewService } from '../providers/cameraPreview.service';
 
@@ -39,7 +42,8 @@ import { CameraPreviewService } from '../providers/cameraPreview.service';
     OrderPage,
     TabsPage,
     PayPage,
-    PreviewPage  
+    PreviewPage,
+    QRcodePage
   ],
   imports: [
     BrowserModule,
@@ -57,7 +61,8 @@ import { CameraPreviewService } from '../providers/cameraPreview.service';
     OrderPage,
     TabsPage,
     PayPage,
-    PreviewPage
+    PreviewPage,
+    QRcodePage
   ],
   providers: [
     StatusBar,
@@ -68,6 +73,8 @@ import { CameraPreviewService } from '../providers/cameraPreview.service';
     wyHttpService,
     UserService,
     JPush,
+    Device,
+    Wechat,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })

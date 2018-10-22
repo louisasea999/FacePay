@@ -16,6 +16,10 @@
     {
       "path": "/jpush",
       "proxyUrl": "https://bjapi.push.jiguang.cn"
+    },
+    {
+      "path": "/wechat",
+      "proxyUrl": "https://api.mch.weixin.qq.com"
     }
     
   ]

@@ -6,7 +6,7 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content padding class="contactpage">
   <!-- <ion-list>
     <ion-list-header>Follow us on Twitter</ion-list-header>
     <ion-item>
@@ -14,10 +14,11 @@
       @myframework
     </ion-item>
   </ion-list> -->
-  <div class="PayVedio" on-tap="getH5Cameral()" >
-      <video id="video1" src="">Video sream is no available</video>
+  <div class="PayVedio2" on-tap="getH5Cameral()" >
+      <video id="video1" width="300" src="" autoplay>Video sream is no available</video>
       <canvas id="canvas1" width="300" height="300">canvas is support</canvas>
-      <img id="iimg" alt="">
+      <!-- <img id="iimg" alt=""> -->
+      
     </div>
     <div class="PayOrderDiv" *ngIf="isUser">
       <!-- <div class="PayOrderDiv" > -->
@@ -25,8 +26,17 @@
         <div class="readAll right" on-tap="goToMyOrderPage()">
           查看全部>
         </div> -->
+        
       <button ion-button on-tap="getTradeNumber()">商家下订单</button>
         
         <!-- <div class="order"></div> -->
+      </div>
+      <!-- <button ion-button on-tap="startAnimation()">startAnimation</button> -->
+      
+      <div class="circle-load"  *ngIf="previewOn">
+        <svg width="300px" height="300px" version="1.1" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="150" cy="150" r="145" stroke-width="10" stroke="gainsboro" fill="none"></circle>
+            <circle cx="150" cy="150" r="145" stroke-width="10" stroke="darkturquoise" fill="none" class="circle-load-svg"></circle>
+        </svg>
       </div>
 </ion-content>

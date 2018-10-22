@@ -4,9 +4,16 @@ import { AlertController } from 'ionic-angular';
 // import { Alipay } from '@ionic-native/alipay';
 // import { MinePage } from '../mine/mine'
 // import { Camera, CameraOptions } from '@ionic-native/camera'
+import { QRcodePage } from '../qrcode/qrcode';
+import { StatusBar } from '@ionic-native/status-bar';
 
 import { wyHttpService } from '../../config/http.service'
 import { UserService } from '../../config/user.service'
+import { Device } from '@ionic-native/device';
+// import { JPush } from '@jiguang-ionic/jpush';
+import { CameraPreviewService } from '../../providers/cameraPreview.service';
+import { window } from 'rxjs/operators/window';
+
 // import { window } from 'rxjs/operators/window';
 declare var cordova: any;
 
@@ -20,7 +27,10 @@ export class RegisterPage {
         // private camera: Camera,
         private http: wyHttpService,
         private userservice: UserService,
-        private promptAlert: AlertController
+        private promptAlert: AlertController,
+        private device: Device,
+        private previewcamera: CameraPreviewService,
+        private statusBar:StatusBar
     ) {
         let _self = this;
         window['getCode'] = function (arg) {
@@ -38,16 +48,70 @@ export class RegisterPage {
     i = 0;
     aliAccount = null;
     video = null;
+    img = null;
     canvas = null;
     ctx = null;
     authSign = null;
+    previewOn: boolean = false;
+
     ngOnInit() {
         // setTimeout(this.getH5Cameral(), 0)
         console.log('iii');
+        this.statusBar.hide();
         this.video = document.getElementById('video2');
         this.canvas = document.getElementById('canvas2');
         this.ctx = this.canvas.getContext('2d');
-        this.getH5Cameral()
+    }
+    ionViewWillEnter() {
+        console.log('register')
+        console.log(this.device)
+        // console.log(this.device.platform)
+
+        this.takePicture()
+        // this.drawImage(false)
+    }
+    takePicture() {
+        let _self = this;
+        this.previewOn = true;
+        // await this.
+        // if (this.device.platform == "iOS") {
+        console.log('ios')
+        _self.previewcamera.startCamera({}).then(data => {
+            console.log('previewcamera', data)
+            _self.previewcamera.getSupportedFlashModes().then(data => {
+                console.log(data)
+                if (data.length > 0) {
+                    //   _self.previewcamera.getFlashMode().then(data => {
+                    //     console.log(data)
+                    //   })
+                    return _self.previewcamera.setFlashMode('off').then(data => {
+                        console.log(data)
+                    })
+                }
+            }).then(() => {
+                setTimeout(()=>{
+                    this.previewcamera.takePicture().then(data => {
+                      _self.imgBase = `data:image/jpeg;base64,${data[0]}`;
+                      _self.askServer(_self.imgBase)
+                      // console.log(_self.base64)
+                      _self.img = new Image()
+                      _self.img.src = _self.imgBase;
+                      _self.previewcamera.StopCameraPreview()
+                      // _self.drawImage();
+                      _self.previewOn = false;
+                  })
+                  },1000) 
+            })
+            // setTimeout(() => {
+
+            // }, 0)
+        }).catch(err => {
+            console.log(err)
+        });
+        // } else {
+        //     console.log('android')
+        //     this.getH5Cameral()
+        // }
     }
     backToMine(e) {
         // console.log('taped', e)
@@ -158,7 +222,7 @@ export class RegisterPage {
             };
             _self.streamTrack = stream.getVideoTracks();
             setTimeout(() => {
-                _self.drawImage()
+                _self.drawImage(false)
             }, 1700)
             setTimeout(() => {
                 // console.log(canvas.toDataURL('image/png').slice(22))
@@ -168,20 +232,41 @@ export class RegisterPage {
             // alert(err.name)
             // alert(err.message)
             console.log(err)
+            console.log(err.name)
+            console.log(err.message)
         })
     }
-    drawImage() {
+    drawImage(rectangle) {
         // let _self = this;
         // if(this.video.paused||this.video.ended){
         //     console.log('video stop')
         //     return
         // }
-        this.int1 = setInterval(() => {
-            console.log('drawing')
-            this.ctx.drawImage(this.video, 0, 0);
-        }, 50)
+        console.log('drawing', rectangle)
+        // if (this.device.platform == "iOS") {
+        // } else {
+        //     this.int1 = setInterval(() => {
+        //         this.ctx.drawImage(this.video, 0, 0);
+        //     }, 50)
+        // }
         // setTimeout(_self.drawImage(),0)
         // setTimeout(_self.stopCameral(),10000)
+
+        if (rectangle) {
+            this.ctx.drawImage(this.img, rectangle.left - 50, rectangle.top - 50, 300, 300, 0, 0, 300, 300);
+            // this.ctx.drawImage(this.img,0,0,300,300);
+        } else {
+            // this.int1 = setInterval(() => {
+            // this.ctx.drawImage(this.video, 0, 0);
+            let img = new Image();
+            img.src = '../../assets/imgs/iu.jpeg';
+            img.onload = () => {
+                this.ctx.drawImage(img, 0, 0);
+                // console.log(this.canvas.toDataURL("image/png"))
+            }
+
+            //     }, 50)
+        }
     }
     stopCameral() {
         if (this.streamTrack.length == 0) return;
@@ -230,10 +315,7 @@ export class RegisterPage {
         this.http.faceSearch(base64.slice(22)).then((data: any) => {
             console.log(data)
             //查到登陆成功
-            if (data.results && data.results[0].confidence > 90) {
-                // console.log(data.results[0].confidence > 90)
-                return this.getLoginInfo(data.results[0].face_token, base64)
-            } else if (data.faces.length == 0) {
+            if (data.faces.length == 0) {
                 let loginSuccessAlert = this.promptAlert.create({
                     title: '提示',
                     message: "未检测到人脸信息，请点确认重新检测",
@@ -248,30 +330,36 @@ export class RegisterPage {
                             text: '确认',
                             handler: data => {
                                 // console.log('detect failed');
-                                this.getH5Cameral()
+                                this.takePicture()
                             }
                         }
                     ]
                 })
                 loginSuccessAlert.present();
             } else {
-                //查不到请求注册
-                this.showPrompt(data.faces[0].face_token, base64)
+                // console.log(data.results[0].confidence > 90)
+                this.drawImage(data.faces[0].face_rectangle);
+                if (data.results[0].confidence > 90) {
+                    this.getLoginInfo(data.results[0].face_token, base64)
+                } else {
+                    this.showPrompt(data.faces[0].face_token, base64)
+                }
             }
         }).catch(err => {
             console.log(err)
         })
-        this.stopCameral();
+
     }
     showPrompt(face_token, base64) {
         let _self = this;
         const prompt = this.promptAlert.create({
             title: '提示',
-            message: "输入手机后四位尾号，点击确认跳转支付授权页面，授权成功后完成注册",
+            // message: "输入手机后四位尾号，点击确认跳转支付授权页面，授权成功后完成注册",
+            message: "输入手机号完成注册后扫描二维码完成授权",
             inputs: [
                 {
                     name: 'phonenumber',
-                    placeholder: '手机尾号后4位'
+                    placeholder: '请输入手机号'
                 }
             ],
             buttons: [
@@ -286,7 +374,8 @@ export class RegisterPage {
                     handler: data => {
                         // if()
                         console.log(data['phonenumber'])
-                        let reg = /\d{4}/
+                        // let reg = /\d{4}/
+                        let reg=/^1[0-9]{10}$/
                         if (!reg.test(data['phonenumber'])) {
                             return false;
                         }
@@ -299,7 +388,8 @@ export class RegisterPage {
                         _self.imgBase = base64;
                         _self.face_token = face_token;
                         _self.phoneNumber = data['phonenumber']
-                        _self.getSignInfo()
+                        // _self.getSignInfo()
+                        _self.register();
                     }
                 }
             ]
@@ -309,10 +399,23 @@ export class RegisterPage {
     //查询注册信息
     getLoginInfo(face_token, base64) {
         console.log(face_token)
+        let _self=this;
         this.http.getLoginInfo(face_token).then((data: any) => {
-            console.log(data)
-            if (data.length > 0) {
-                this.userservice.login(face_token, base64, null, data[0][2], data[0][1])
+            console.log('用户注册信息',data)
+            // console.log(JPush)
+            // JPush['setAlias']({ sequence: 1, alias: data[0][2] }).then((result) => {
+            //     console.log('alias',result)
+            //     // var sequence = result.sequence
+            //     // var alias = result.alias
+            // }, (error) => {
+            //     console.log(error)
+            //     // var sequence = error.sequence
+            //     // var errorCode = error.code
+            // })
+            if (data&&data['auth']) {
+                let baseCanvas = this.canvas.toDataURL("image/png");
+                console.log()
+                this.userservice.login(data.face_id, baseCanvas, null, data.user_id, data.phonenumber)
                 let loginSuccessAlert = this.promptAlert.create({
                     title: '提示',
                     message: "登陆成功",
@@ -321,14 +424,44 @@ export class RegisterPage {
                             text: '确认',
                             handler: data => {
                                 console.log('loginSuccesss');
-                                this.navCtrl.pop()
+                                alert('已授权')
+                                // this.navCtrl.pop()
                             }
                         }
                     ]
                 })
                 loginSuccessAlert.present();
-            }else{
+            } else if(data&&!data['auth']&&data['phonenumber']&&data['face_id']){
+                _self.phoneNumber=data.phonenumber;
+                _self.face_token=data.face_id;
+                _self.qrcode()         
+            }else {
                 console.log('未发现注册DB信息')
+                this.http.removeAllFaces(face_token).then(data => {
+                    console.log(data);
+                    let loginSuccessAlert = this.promptAlert.create({
+                        title: '提示',
+                        message: "未检测到注册信息，请点确认重新检测",
+                        buttons: [
+                            {
+                                text: '取消',
+                                handler: data => {
+                                    console.log('detect failed');
+                                }
+                            },
+                            {
+                                text: '确认',
+                                handler: data => {
+                                    // console.log('detect failed');
+                                    this.takePicture()
+                                }
+                            }
+                        ]
+                    })
+                    loginSuccessAlert.present();
+                }).catch(err => {
+                    console.log(err)
+                })
             }
         })
     }
@@ -336,24 +469,26 @@ export class RegisterPage {
     register() {
         console.log(this.face_token)
         console.log(this.phoneNumber)
-        console.log(this.user_id)
-        if (!this.face_token||!this.phoneNumber||!this.user_id) {
+        // console.log(this.user_id)
+        let _self=this;
+        if (!this.face_token || !this.phoneNumber) {
             alert('信息错误')
             return
         }
-        return Promise.all([this.http.registerDB(this.face_token, this.phoneNumber, this.user_id), this.http.faceSetAddface(this.face_token)]).then(data => {
+        return Promise.all([this.http.registerDB(this.face_token, this.phoneNumber), this.http.faceSetAddface(this.face_token)]).then(data => {
             // Promise.all([this.http.registerDB('dcc9adbb8533bc083083bef62795a8e7', 6499,'2088402239622912')]).then(data=>{
-            console.log('ss',data)
+            console.log('ss', data)
             this.userservice.login(this.face_token, this.imgBase, null, this.user_id, this.phoneNumber)
             let registerSuccessAlert = this.promptAlert.create({
                 title: '提示',
-                message: "注册成功",
+                message: "注册成功,点击确认进入授权页面",
                 buttons: [
                     {
                         text: '确认',
                         handler: data => {
                             console.log('registerSuccesss');
-                            this.navCtrl.pop()
+                            // this.navCtrl.pop()
+                            _self.qrcode()     
                         }
                     }
                 ]
@@ -361,7 +496,7 @@ export class RegisterPage {
             registerSuccessAlert.present();
         }).catch(err => {
             console.log('ee')
-            
+
             console.log(err)
         })
         // console.log('dd')
@@ -490,11 +625,31 @@ export class RegisterPage {
             console.log(err)
         })
     }
-    
+    qrcode(){
+        console.log(this.face_token,this.phoneNumber)
+        // let redirectUrl=encodeURIComponent(`http://192.168.0.6:8080/Alipay/auth.html?face=${this.face_token}&phone=${this.phoneNumber}`)
+        // console.log(encodeURIComponent(redirectUrl))
+        // let dataText=`https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=2018062660475092%26scope=auth_user%26redirect_uri=${redirectUrl}`
+        let dataText=`http://neighbour.southeastasia.cloudapp.azure.com/Alipay/platform.html?face=${this.face_token}%26phone=${this.phoneNumber}%26uuid=${this.device.uuid}`
+        console.log(dataText)
+        this.navCtrl.push(QRcodePage,{'src':dataText}) 
+    }
+    goToQRcodePage(){
+        console.log('dd')
+        this.navCtrl.push(QRcodePage,{'src':'123'}) 
+    }
     // window.getCode=function(arg) {
     //     console.log('11', arg)
     //     alert(arg);
     // }
+    ionViewWillLeave() {
+        console.log('willleave')
+        // if (this.device.platform == "iOS") {
+            console.log('ios')
+           // this.previewcamera.StopCameraPreview()
+        // }
+    }
+   
     ngOnDestroy() {
         console.log('des')
     }

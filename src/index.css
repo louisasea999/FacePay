@@ -30,6 +30,10 @@
 .clear{
     clear: both;
 }
+body{
+    position:fixed;
+    overflow-y:hidden;
+}
 html body ion-app.ios{
     background-color:yellow;
 }
